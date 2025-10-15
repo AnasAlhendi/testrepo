@@ -1,0 +1,20 @@
+{
+  "/api/tp": {
+    "target": "http://127.0.0.1:19080",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api/tp": "/api" }
+  },
+  "/api/registry": {
+    "target": "http://127.0.0.1:8082",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api/registry": "/api" }
+  },
+  "/api/ui-config": {
+    "target": "http://127.0.0.1:18080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+

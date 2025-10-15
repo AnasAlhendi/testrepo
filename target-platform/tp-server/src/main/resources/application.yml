@@ -1,0 +1,16 @@
+server:
+  port: 19080
+spring:
+  application:
+    name: tp-server
+
+# Example TP config location and defaults (placeholder)
+tp:
+  home: "${user.home}/.local/share/TargetPlatform"
+  autoStart: true
+  configPath: "${tp.home}/config/tp-config.yml"
+  registry:
+    url: "" # e.g. http://127.0.0.1:8082/api
+    autoSyncOnStart: false
+  keys:
+    publicKeyPath: "" # path to X.509 PEM public key used to verify registry catalog signature

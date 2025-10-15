@@ -1,0 +1,22 @@
+tpHome: "~/.local/share/TargetPlatform"
+autoStart: true
+
+plugins:
+  - id: "analytics"
+    source:
+      maven: "com.acme.plugins:analytics-plugin:1.2.0:zip:plugin"
+    verifySignature: true
+
+programs:
+  - id: "core-service"
+    source:
+      maven: "com.yourco.app:core-service:1.0.0:jar"
+    jvmArgs:
+      - "-Xmx512m"
+      - "-DAPPDATA_DIR=~/.local/share/YourApp"
+      - "-Dpf4j.pluginsDir=~/.local/share/YourApp/plugins"
+    args: []
+    health:
+      http: "http://127.0.0.1:18080/api/health"
+      timeoutSec: 30
+

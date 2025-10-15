@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: registry-server
+
+server:
+  port: 8082
+
+registry:
+  signing:
+    privateKeyPath: "" # optional: path to PKCS8 PEM private key for signing
+  storage:
+    dir: "${user.home}/.local/share/RegistryServer" # root storage directory
