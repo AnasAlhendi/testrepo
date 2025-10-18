@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <h3>Programs</h3>
-      <p-table [value]="programs()" [paginator]="true" [rows]="10">
+      <p-table [value]="programs()" [paginator]="true" [rows]="10" [scrollable]="true" scrollHeight="300px" [virtualScroll]="true" [virtualScrollItemSize]="44">
         <ng-template pTemplate="header">
           <tr><th>ID</th><th>Version</th><th>Actions</th></tr>
         </ng-template>
@@ -31,7 +31,7 @@ import { CommonModule } from '@angular/common';
       </p-table>
 
       <h3 class="mt-4">Plugins</h3>
-      <p-table [value]="plugins()" [paginator]="true" [rows]="10">
+      <p-table [value]="plugins()" [paginator]="true" [rows]="10" [scrollable]="true" scrollHeight="300px" [virtualScroll]="true" [virtualScrollItemSize]="44">
         <ng-template pTemplate="header">
           <tr><th>ID</th><th>Version</th><th>Actions</th></tr>
         </ng-template>

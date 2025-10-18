@@ -1,0 +1,9 @@
+com\yourco\registry\service\StorageService.class
+com\yourco\registry\security\ApiKeyAuthFilter.class
+com\yourco\registry\RegistryServerApplication.class
+com\yourco\registry\service\SigningService.class
+com\yourco\registry\api\FilesController.class
+com\yourco\registry\api\RegistryController.class
+com\yourco\registry\security\SecurityConfig$SecurityProps.class
+com\yourco\registry\security\SecurityConfig.class
+com\yourco\registry\service\CatalogService.class

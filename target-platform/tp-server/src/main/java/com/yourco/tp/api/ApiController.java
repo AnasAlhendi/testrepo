@@ -58,6 +58,11 @@ public class ApiController {
         return ResponseEntity.ok(Map.of("id", id, "status", "uninstalled"));
     }
 
+    @PostMapping("/plugins/update")
+    public ResponseEntity<PluginSpec> updatePlugin(@RequestBody PluginSpec spec) {
+        return ResponseEntity.ok(pluginService.update(spec));
+    }
+
     // Programs
     @GetMapping("/programs")
     public ResponseEntity<List<ProgramSpec>> listPrograms() {

@@ -1,0 +1,10 @@
+server:
+  address: 127.0.0.1
+  port: 18080
+  servlet:
+    context-path: /
+spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+

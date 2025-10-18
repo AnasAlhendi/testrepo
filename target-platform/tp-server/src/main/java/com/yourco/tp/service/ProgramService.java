@@ -11,11 +11,13 @@ public class ProgramService {
     private final Map<String, ProgramSpec> programs = new LinkedHashMap<>();
     private final StateStore stateStore;
     private final ProgramSupervisor supervisor;
+    private final AuditLogService audit;
     private final TpValidator validator = new TpValidator();
 
-    public ProgramService(StateStore stateStore, ProgramSupervisor supervisor) {
+    public ProgramService(StateStore stateStore, ProgramSupervisor supervisor, AuditLogService audit) {
         this.stateStore = stateStore;
         this.supervisor = supervisor;
+        this.audit = audit;
     }
 
     public List<ProgramSpec> list() { return new ArrayList<>(programs.values()); }
@@ -32,6 +34,7 @@ public class ProgramService {
         spec = programs.get(spec.getId());
         if (spec.getStatus() == null || spec.getStatus().isBlank()) spec.setStatus("installed");
         stateStore.savePrograms(list());
+        audit.program("INSTALL", spec.getId(), Map.of());
         return spec;
     }
 
@@ -40,6 +43,7 @@ public class ProgramService {
         spec.setStatus("running");
         try { supervisor.start(spec); } catch (RuntimeException e) { spec.setStatus("installed"); throw e; }
         stateStore.savePrograms(list());
+        audit.program("START", id, Map.of());
         return spec;
     }
 
@@ -48,6 +52,7 @@ public class ProgramService {
         spec.setStatus("stopped");
         supervisor.stop(id);
         stateStore.savePrograms(list());
+        audit.program("STOP", id, Map.of());
         return spec;
     }
 

@@ -8,7 +8,14 @@ import { CommonModule } from '@angular/common';
   selector: 'app-programs',
   imports: [CommonModule, TableModule, ButtonModule],
   template: `
-    <p-table [value]="rows()" [paginator]="true" [rows]="10">
+    <p-table
+      [value]="rows()"
+      [paginator]="true"
+      [rows]="10"
+      [scrollable]="true"
+      scrollHeight="400px"
+      [virtualScroll]="true"
+      [virtualScrollItemSize]="44">
       <ng-template pTemplate="header">
         <tr>
           <th>ID</th>

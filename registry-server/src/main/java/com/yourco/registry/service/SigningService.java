@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -42,12 +43,26 @@ public class SigningService {
     }
 
     public void writeSignature(byte[] data) {
+        // Always write sha256 alongside signature
+        writeSha256(data);
         if (!isConfigured()) return;
         String sig = signToBase64(data);
         try {
             Files.writeString(storage.root().resolve("catalog.sig"), sig, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException("Failed to write signature", e);
+        }
+    }
+
+    public void writeSha256(byte[] data) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(data);
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) sb.append(String.format("%02x", b));
+            Files.writeString(storage.root().resolve("catalog.sha256"), sb.toString(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to write sha256", e);
         }
     }
 

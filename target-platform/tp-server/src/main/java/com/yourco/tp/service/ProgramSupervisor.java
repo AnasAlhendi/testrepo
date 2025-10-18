@@ -15,14 +15,16 @@ public class ProgramSupervisor {
     private final LogService logService;
     private final MavenResolver mavenResolver;
     private final DownloadService downloadService;
+    private final AuditLogService audit;
 
     private final Map<String, Process> processes = new HashMap<>();
 
-    public ProgramSupervisor(HomeService homeService, LogService logService, MavenResolver mavenResolver, DownloadService downloadService) {
+    public ProgramSupervisor(HomeService homeService, LogService logService, MavenResolver mavenResolver, DownloadService downloadService, AuditLogService audit) {
         this.homeService = homeService;
         this.logService = logService;
         this.mavenResolver = mavenResolver;
         this.downloadService = downloadService;
+        this.audit = audit;
     }
 
     public synchronized void start(ProgramSpec spec) {
@@ -49,6 +51,16 @@ public class ProgramSupervisor {
                     in.transferTo(log);
                 } catch (IOException ignored) {}
             }, "program-log-" + spec.getId()).start();
+
+            // Watch for abnormal exit to record CRASH
+            new Thread(() -> {
+                try {
+                    int code = p.waitFor();
+                    if (code != 0) {
+                        audit.program("CRASH", spec.getId(), java.util.Map.of("exitCode", code));
+                    }
+                } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
+            }, "program-watch-" + spec.getId()).start();
         } catch (IOException e) {
             throw new RuntimeException("Failed to start program: " + spec.getId(), e);
         }
@@ -71,7 +83,11 @@ public class ProgramSupervisor {
             return p;
         }
         if (spec.getSource().getUrl() != null && !spec.getSource().getUrl().isBlank()) {
-            return downloadService.downloadUrl(spec.getSource().getUrl(), spec.getId() + (spec.getVersion() != null ? ("-" + spec.getVersion()) : "") + ".jar");
+            return downloadService.downloadUrl(
+                    spec.getSource().getUrl(),
+                    spec.getId() + (spec.getVersion() != null ? ("-" + spec.getVersion()) : "") + ".jar",
+                    spec.getSource().getSha256()
+            );
         }
         if (spec.getSource().getMaven() != null && !spec.getSource().getMaven().isBlank()) {
             return mavenResolver.resolve(spec.getSource().getMaven());

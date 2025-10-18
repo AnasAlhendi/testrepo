@@ -1,0 +1,17 @@
+server:
+  address: 127.0.0.1
+  port: 19080
+
+spring:
+  application:
+    name: tp-server
+
+tp:
+  home: "${user.home}/.local/share/TargetPlatform"
+  autoStart: true
+  configPath: "${tp.home}/config/tp-config.yml"
+  registry:
+    url: "http://127.0.0.1:8082/api" # override as needed
+    autoSyncOnStart: false
+  keys:
+    publicKeyPath: "" # path to X.509 PEM public key used to verify catalog signatures

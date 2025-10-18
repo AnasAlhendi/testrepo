@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping({"/api", "/v1"})
 public class RegistryController {
 
     private final CatalogService catalogService;
@@ -50,6 +50,18 @@ public class RegistryController {
         return ResponseEntity.ok(sig);
     }
 
+    @GetMapping("/catalog.sha256")
+    public ResponseEntity<String> catalogSha256() {
+        var bytes = catalogService.catalogBytes();
+        signingService.writeSha256(bytes);
+        try {
+            var hex = java.nio.file.Files.readString(storageService.root().resolve("catalog.sha256"));
+            return ResponseEntity.ok(hex);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error computing sha256");
+        }
+    }
+
     @PostMapping("/catalog/plugins")
     public ResponseEntity<Map<String, Object>> addPlugin(@RequestBody Map<String, Object> plugin) {
         catalogService.addPlugin(plugin);
@@ -73,12 +85,11 @@ public class RegistryController {
             @RequestParam("file") MultipartFile file) {
         var path = storageService.storePlugin(id, version, file);
         var rel = storageService.root().relativize(path).toString().replace('\\','/');
-        var plugin = Map.of(
-                "id", id,
-                "version", version,
-                "path", path.toString(),
-                "url", "/api/files/" + rel
-        );
+        Map<String, Object> plugin = new java.util.LinkedHashMap<>();
+        plugin.put("id", id);
+        plugin.put("version", version);
+        plugin.put("path", path.toString());
+        plugin.put("url", "/api/files/" + rel);
         catalogService.addPlugin(plugin);
         catalogService.persist();
         signingService.writeSignature(catalogService.catalogBytes());
@@ -92,15 +103,29 @@ public class RegistryController {
             @RequestParam("file") MultipartFile file) {
         var path = storageService.storeProgram(id, version, file);
         var rel = storageService.root().relativize(path).toString().replace('\\','/');
-        var program = Map.of(
-                "id", id,
-                "version", version,
-                "path", path.toString(),
-                "url", "/api/files/" + rel
-        );
+        Map<String, Object> program = new java.util.LinkedHashMap<>();
+        program.put("id", id);
+        program.put("version", version);
+        program.put("path", path.toString());
+        program.put("url", "/api/files/" + rel);
         catalogService.addProgram(program);
         catalogService.persist();
         signingService.writeSignature(catalogService.catalogBytes());
         return ResponseEntity.ok(program);
+    }
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> uploadUnified(
+            @RequestParam("type") String type,
+            @RequestParam("id") String id,
+            @RequestParam("version") String version,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "meta", required = false) String meta
+    ) {
+        if ("plugin".equalsIgnoreCase(type)) {
+            return uploadPlugin(id, version, file);
+        } else if ("program".equalsIgnoreCase(type)) {
+            return uploadProgram(id, version, file);
+        }
+        return ResponseEntity.badRequest().body(Map.of("error", "type must be plugin or program"));
     }
 }

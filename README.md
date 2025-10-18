@@ -14,6 +14,13 @@ Notes
 Setup & Usage
 - See docs/SETUP.md for end-to-end setup, running, and usage instructions.
 
+Docs Index
+- docs/OVERVIEW.md — components and flow
+- docs/API.md — REST endpoints
+- docs/CONFIG.md — configuration reference
+- docs/DEVELOPMENT.md — build and dev workflows
+- docs/SCRIPTS.md — helper scripts
+
 Next Steps
 - Populate Angular UI and wire `ui-angular-build` to build+copy assets.
 - Flesh out TargetPlatform services for plugin/program management.

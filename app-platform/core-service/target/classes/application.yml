@@ -1,0 +1,10 @@
+server:
+  port: 18080
+spring:
+  application:
+    name: core-service
+
+tp:
+  baseUrl: "http://127.0.0.1:19080/api"
+registry:
+  baseUrl: "http://127.0.0.1:8082/api"

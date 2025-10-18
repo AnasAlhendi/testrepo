@@ -1,0 +1,13 @@
+server:
+  address: 127.0.0.1
+  port: 8082
+
+spring:
+  application:
+    name: registry-server
+
+registry:
+  signing:
+    privateKeyPath: "" # optional PKCS8 private key for signing
+  storage:
+    dir: "${user.home}/.local/share/RegistryServer"

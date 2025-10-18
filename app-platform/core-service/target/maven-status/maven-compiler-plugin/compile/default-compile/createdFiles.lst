@@ -1,0 +1,6 @@
+com\yourco\app\security\SecurityHeadersFilter.class
+com\yourco\app\api\ProxyController.class
+com\yourco\app\web\SpaFallbackController.class
+com\yourco\app\api\HealthController.class
+com\yourco\app\CoreServiceApplication.class
+com\yourco\app\api\PluginsController.class

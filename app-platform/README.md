@@ -9,6 +9,10 @@ Modules
 
 Build (server only)
 - mvn -pl ui-angular-build,core-service -Pprod clean package
+  - The `ui-angular-build` module now:
+    - Installs Node/npm (frontend-maven-plugin)
+    - Runs `npm ci && npm run build` in `ui-angular/`
+    - Copies `ui-angular/dist/**` into `core-service/src/main/resources/static/`
 
 Run
 - java -Xmx512m -DAPPDATA_DIR="%USERPROFILE%/.local/share/YourApp" -Dpf4j.pluginsDir="%USERPROFILE%/.local/share/YourApp/plugins" -jar core-service/target/core-service.jar
@@ -20,7 +24,6 @@ Angular + PrimeNG
 - Location: `app-platform/ui-angular`
 - Routes: /home, /programs, /store, /settings, /logs, /plugin/:id
 - Change detection: OnPush; lazy-loaded standalone components
-- Build locally (requires network):
-  - npm ci
-  - npm run build
-  - Then re-run Maven copy: `mvn -pl ui-angular-build -Pprod package`
+- Build is automated under `-Pprod` via Maven (requires network):
+  - `mvn -pl ui-angular-build,core-service -Pprod clean package`
+  - This runs the Angular build and copies assets automatically.
